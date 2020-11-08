@@ -1,6 +1,6 @@
 class Train
 
-  attr_reader :speed, :route, :number
+  attr_reader :speed, :route, :number, :cars, :station_number
 
   def initialize(number)
     @number = number
@@ -27,11 +27,21 @@ class Train
   end
 
   def move_forward
-    @station_number += 1 if @station_number < (@route.route_stations.length - 1)
+
+    if (@station_number + 1) >= @route.route_stations.size
+      puts 'Нельзя переместить поезд дальше конечной станции'
+    else
+      @station_number += 1
+    end
   end
   
   def move_back
-    @station_number -= 1 if @station_number >= 1
+
+    if @station_number == 0
+      puts 'Нельзя переместить поезд дальше начальной станции'
+    else
+      @station_number -= 1
+    end
   end
 
   def previous_station
@@ -47,22 +57,3 @@ class Train
   end
 end
 
-class PassengerTrain < Train
-
-  def attach_car(car)
-    @cars << car if (@speed == 0 && car.class == PassengerCar)
-  end
-end
-
-class CargoTrain < Train
-
-  def attach_car(car)
-    @cars << car if (@speed == 0 && car.class == CargoCar)
-  end
-end
-
-class PassengerCar
-end
-
-class CargoCar
-end

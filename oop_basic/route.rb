@@ -7,7 +7,7 @@ class Route
   end
 
   def add_intermediate_station(station)
-    @route_stations.insert(-2, station)
+    @route_stations.insert(1, station)
   end
 
   def exclude_intermediate_station(station)
