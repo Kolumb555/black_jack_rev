@@ -2,7 +2,11 @@ require_relative 'train.rb'
 
 class CargoTrain < Train
 
-  def attach_car(car)
-    @cars << car if (@speed == 0 && car.class == CargoCar)
+  attr_reader :type
+  
+  def initialize(number)
+    @number = number
+    @type = 'cargo'
+    super
   end
 end

@@ -11,6 +11,6 @@ class Route
   end
 
   def exclude_intermediate_station(station)
-    @route_stations.delete(station)
+    @route_stations.delete_at(station)
   end
 end

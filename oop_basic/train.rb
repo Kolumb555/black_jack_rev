@@ -55,5 +55,11 @@ class Train
   def next_station
     @route.route_stations[@station_number + 1] if @station_number < @route.route_stations.size
   end
+
+  def attach_car(car)
+    if @speed == 0 and @type == car.type
+      @cars << car
+    end
+  end
 end
 
