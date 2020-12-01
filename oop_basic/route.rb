@@ -1,9 +1,12 @@
 class Route
-
   attr_reader :route_stations
-  
+
+  require_relative 'instance_counter'
+  include InstanceCounter
+
   def initialize(start_station, end_station)
     @route_stations = [start_station, end_station]
+    register_instance
   end
 
   def add_intermediate_station(station)
