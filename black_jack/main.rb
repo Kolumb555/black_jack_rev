@@ -5,4 +5,5 @@ require_relative 'player.rb'
 
 
 action = Action.new
+#action.player_name
 action.run

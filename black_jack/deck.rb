@@ -8,9 +8,8 @@ class Deck #колода карт
   def initialize
 
     @deck_of_cards = []
-    values = (2..10).to_a
-    ['J', 'Q', 'K', 'A'].each { |i| values << i}
-
+    values = (2..10).to_a + ['J', 'Q', 'K', 'A']
+    
     values.each do |v|
       ['+', '<3', '^', '<>'].each do |i|
         @deck_of_cards << "#{v}#{i}" # получен array колоды карт
