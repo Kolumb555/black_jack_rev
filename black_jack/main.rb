@@ -1,9 +1,8 @@
-require_relative 'action.rb'
-require_relative 'deck.rb'
-require_relative 'dealer.rb'
-require_relative 'player.rb'
-
+require_relative 'action'
+require_relative 'deck'
+require_relative 'dealer'
+require_relative 'player'
 
 action = Action.new
-#action.player_name
+action.player_name
 action.run

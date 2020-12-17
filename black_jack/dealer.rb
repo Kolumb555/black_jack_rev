@@ -1,8 +1,8 @@
 class Dealer
-
   attr_accessor :balance, :cards
 
   require_relative 'operations'
+  require_relative 'action'
   include Operations
 
   def initialize
@@ -17,13 +17,14 @@ class Dealer
 
   def show_stars
     if @cards.size == 2
-      puts "Карты дилера: **"
+      puts 'Карты дилера: **'
     else
-      puts "Карты дилера: ***"
+      puts 'Карты дилера: ***'
     end
   end
 
-
-
-
+  def win
+    puts 'Победа дилера'
+    @balance += 20
+  end
 end

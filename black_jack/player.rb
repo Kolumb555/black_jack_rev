@@ -1,5 +1,4 @@
 class Player
-
   require_relative 'operations'
   include Operations
 
@@ -22,14 +21,14 @@ class Player
       puts "Для выбора хода необходимо выбрать соответствующую цифру:
               1. Пропустить
               2. Добавить карту
-              3. Открыть карты"
+              3. Открыть карты\n"
       choice = gets.to_i
     end
     choice
   end
 
-  
-
-
-
+  def win
+    puts 'Победа!'
+    @balance += 20
+  end
 end
