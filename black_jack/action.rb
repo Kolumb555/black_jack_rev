@@ -1,43 +1,31 @@
 class Action
-  require_relative 'operations'
-  include Operations
-
   def initialize
     @player = Player.new
     @deck = Deck.new.deck_of_cards
     @dealer = Dealer.new
+    @interface = Interface.new
   end
 
   def run
-    # abort 'Нулевой баланс, продолжить игру невозможно' if @player.balance <= 0
     2.times do
-      card_to_dealer # раздаем игрокам карты
-      card_to_player
+      take_card(@dealer) # раздаем игрокам карты
+      take_card(@player)
     end
 
-    @player.show_cards # показываем игроку его карты
-    @dealer.show_stars # звездочки вместо карт дилера
+    show_cards(@player)
+    @interface.dealer_show_stars(@dealer.hand.cards.size) # звездочки вместо карт дилера
     bet # вычитаются по 10 долларов у игрока и диллера
     player_move
   end
 
+  def take_card(gamer)
+    card = @deck.delete_at(0)
+    gamer.hand.cards << card
+  end
+
   def player_name
-    puts 'Введите Ваше имя'
+    @interface.player_name
     @player.name = gets.chomp
-  end
-
-  def card_to_dealer
-    card = @deck.delete_at(0)
-    @dealer.cards << card
-  end
-
-  def card_to_player
-    card = @deck.delete_at(0)
-    @player.cards << card
-  end
-
-  def show_balance
-    puts "Ваш баланс: $#{@player.balance}, баланс дилера: $#{@dealer.balance}"
   end
 
   def bet
@@ -45,17 +33,23 @@ class Action
     @dealer.balance -= 10
   end
 
+  def show_cards(gamer)
+    @interface.show_cards(gamer)
+    gamer.hand.cards.each { |card| puts card.show }
+    puts gamer.hand.total_value.to_s
+  end
+
   def player_move
-    choice = @player.player_choice # выбранный вариант хода
+    choice = @interface.player_choice # выбранный вариант хода
     case choice
     when 1
       dealer_move
     when 2
-      if @player.cards.size == 2
-        card_to_player
-        @player.show_cards
+      if @player.hand.cards.size == 2
+        take_card(@player)
+        show_cards(@player)
       else
-        puts 'Добавить карту возможно, только если на руках 2 карты'
+        @interface.no_more_cards
       end
       player_move
     when 3
@@ -65,36 +59,38 @@ class Action
   end
 
   def dealer_move
-    card_to_dealer if cards_value(@dealer.cards) < 17 && @dealer.cards.size == 2
-    @dealer.show_stars
+    take_card(@dealer) if @dealer.hand.total_value < 17 && @dealer.hand.cards.size == 2
+    @interface.dealer_show_stars(@dealer.hand.cards.size)
     player_move unless both_three_cards?
   end
 
   def open_cards
-    @player.show_cards
+    show_cards(@player)
 
-    @dealer.show_cards
+    show_cards(@dealer)
   end
 
   def both_three_cards?
-    result if @player.cards.size == 3 && @dealer.cards.size == 3
+    result if @player.hand.cards.size == 3 && @dealer.hand.cards.size == 3
   end
 
   def result
-    puts '    Игра закончена    '
+    @interface.game_over
     open_cards
-    case cards_value(@player.cards)
+    case @player.hand.total_value
     when 22...30
-      if cards_value(@dealer.cards) <= 21
-        puts 'Сумма Ваших очков более 21.'
+      if @dealer.hand.total_value <= 21
+        @interface.dealer_win
         @dealer.win
       else
         draw
       end
     when 4..21
-      if cards_value(@dealer.cards) < cards_value(@player.cards)
+      if @dealer.hand.total_value < @player.hand.total_value
+        @interface.player_win
         @player.win
-      elsif cards_value(@dealer.cards) > cards_value(@player.cards)
+      elsif @dealer.hand.total_value > @player.hand.total_value
+        @interface.dealer_win
         @dealer.win
       else
         draw
@@ -104,20 +100,18 @@ class Action
   end
 
   def draw
-    puts 'Ничья'
-    @dealer.drawn_game
-    @player.drawn_game
+    @interface.draw
+    @dealer.draw
+    @player.draw
   end
 
   def new_game?
-    puts "\nСыграть еще раз?
-          Да - 1,
-          Нет - любая другая клавиша\n"
+    @interface.new_game?
     choice = gets.to_i
-    abort 'Спасибо за игру' if choice != 1
+    abort @interface.game_end if choice != 1
     @deck = Deck.new.deck_of_cards
-    @dealer.cards = []
-    @player.cards = []
+    @dealer.hand = Hand.new
+    @player.hand = Hand.new
     run
   end
 end
