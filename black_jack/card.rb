@@ -1,8 +1,8 @@
 class Card
-  attr_reader :show, :points
+  attr_reader :value, :suit
 
-  def initialize(value, suit, points)
-    @show = value.to_s + suit
-    @points = points
+  def initialize(value, suit)
+    @value = value
+    @suit = suit
   end
 end

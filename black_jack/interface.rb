@@ -5,6 +5,9 @@ class Interface
     else
       puts 'Ваши карты, сумма очков:'
     end
+
+    gamer.hand.cards.each { |card| puts card.value.to_s + card.suit }
+    puts gamer.hand.total_value.to_s
   end
 
   def dealer_show_stars(cards_qty)

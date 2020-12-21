@@ -1,7 +1,7 @@
 class Action
   def initialize
     @player = Player.new
-    @deck = Deck.new.deck_of_cards
+    @deck = Deck.new
     @dealer = Dealer.new
     @interface = Interface.new
   end
@@ -19,7 +19,7 @@ class Action
   end
 
   def take_card(gamer)
-    card = @deck.delete_at(0)
+    card = @deck.give_card
     gamer.hand.cards << card
   end
 
@@ -35,8 +35,6 @@ class Action
 
   def show_cards(gamer)
     @interface.show_cards(gamer)
-    gamer.hand.cards.each { |card| puts card.show }
-    puts gamer.hand.total_value.to_s
   end
 
   def player_move
@@ -51,11 +49,10 @@ class Action
       else
         @interface.no_more_cards
       end
-      player_move
     when 3
       result
     end
-    both_three_cards?
+    player_move unless both_three_cards?
   end
 
   def dealer_move
@@ -77,6 +74,13 @@ class Action
   def result
     @interface.game_over
     open_cards
+
+    winner
+
+    new_game?
+  end
+
+  def winner
     case @player.hand.total_value
     when 22...30
       if @dealer.hand.total_value <= 21
@@ -96,7 +100,6 @@ class Action
         draw
       end
     end
-    new_game?
   end
 
   def draw
@@ -109,7 +112,7 @@ class Action
     @interface.new_game?
     choice = gets.to_i
     abort @interface.game_end if choice != 1
-    @deck = Deck.new.deck_of_cards
+    @deck = Deck.new
     @dealer.hand = Hand.new
     @player.hand = Hand.new
     run
